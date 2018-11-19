@@ -38,35 +38,37 @@ Imagem meuFiltro(Imagem origem) {
 			destino.m[i][j][2] = origem.m[i][j][2];
 		}
 	}
+
 	for(j = 0; j < destino.w; j++) {
 		for(i = 0; i < destino.h; i=i+nivel) {
 			int cor1=destino.m[i][j][0];
-			int cor2=destino.m[i][j][0];
-			int cor3=destino.m[i][j][0];
-			destino.m[i][j][0] = 0;
-			destino.m[i][j][1] = 0;
-			destino.m[i][j][2] = 0;
+			int cor2=destino.m[i][j][1];
+			int cor3=destino.m[i][j][2];
+			
 			for(int c=i; c<i+nivel; c++){
 				destino.m[c][j][0] = cor1;
 				destino.m[c][j][1] = cor2;
-				destino.m[c][j][2] = cor2;
+				destino.m[c][j][2] = cor3;
 			}
+			// destino.m[i][j][0] = 125;
+			// destino.m[i][j][1] = 125;
+			// destino.m[i][j][2] = 125;
 		}
 	}
 	for(j = 0; j < destino.w; j=j+nivel) {
 		for(i = 0; i < destino.h; i++) {
 			int cor1=destino.m[i][j][0];
-			int cor2=destino.m[i][j][0];
-			int cor3=destino.m[i][j][0];
-			destino.m[i][j][0] = 0;
-			destino.m[i][j][1] = 0;
-			destino.m[i][j][2] = 0;
+			int cor2=destino.m[i][j][1];
+			int cor3=destino.m[i][j][2];
+			
 			for(int c=j; c<j+nivel; c++){
 				destino.m[i][c][0] = cor1;
 				destino.m[i][c][1] = cor2;
-				destino.m[i][c][2] = cor2;
+				destino.m[i][c][2] = cor3;
 			}
-			
+			// destino.m[i][j][0] = 125;
+			// destino.m[i][j][1] = 125;
+			// destino.m[i][j][2] = 125;
 		}
 	}
 	return destino;
