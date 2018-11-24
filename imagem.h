@@ -13,7 +13,7 @@ typedef struct Imagem {
 } Imagem;
 
 Imagem original, resultado;
-Imagem alocarImagem(Imagem referencia);
+Imagem alocarImagem(Imagem referencia, int separacao);
 void desalocarImagem(Imagem referencia);
 
 #endif

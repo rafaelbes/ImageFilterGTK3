@@ -18,19 +18,15 @@ void adicionarWidgetsMeuFiltro(GtkWidget *container) {
 
 Imagem meuFiltro(Imagem origem) {
 	int i, j;
-	Imagem destino = alocarImagem(origem);
 	int nivel = (int) gtk_range_get_value(GTK_RANGE(widgetControleNivel));
-	/*int ch1, ch2, ch3;
-
-	ch1 = 0;
-	ch2 = 1;
-	ch3 = 2;
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetMisturarCanais))) {
-		ch1 = rand()%3;
-		ch2 = (ch1+1+rand()%2)%3;
-		ch3 = 3 - ch2 - ch1;
-	}
-	*/
+	Imagem destino = alocarImagem(origem, nivel);
+	
+	//Kernel de Sharpen
+    int kernel[3][3] = {{0,-1,0},
+                        {-1, 5,-1},
+                        {0,-1,0},
+                        };
+	
 	for(j = 0; j < destino.w; j++) {
 		for(i = 0; i < destino.h; i++) {
 			destino.m[i][j][0] = origem.m[i][j][0];
@@ -38,39 +34,48 @@ Imagem meuFiltro(Imagem origem) {
 			destino.m[i][j][2] = origem.m[i][j][2];
 		}
 	}
+		int cornew0=0;
+		int cornew1=0;
+		int cornew2=0;
 
-	for(j = 0; j < destino.w; j++) {
-		for(i = 0; i < destino.h; i=i+nivel) {
-			int cor1=destino.m[i][j][0];
-			int cor2=destino.m[i][j][1];
-			int cor3=destino.m[i][j][2];
-			
-			for(int c=i; c<i+nivel; c++){
-				destino.m[c][j][0] = cor1;
-				destino.m[c][j][1] = cor2;
-				destino.m[c][j][2] = cor3;
+
+		for(j = 1; j < origem.w-1; j++) {
+			for(i = 1; i < origem.h-1; i++) {
+				
+				for( int y = 0; y < 3; y++ )
+				{
+					for( int x = 0; x < 3; x++ )
+					{	
+						printf("colune e linha :%d, %d\n", j+y, i+x );
+						printf("cores: %d, %d, %d\n", cornew0, cornew1, cornew2 );
+						int jy=j+y-1;
+						int ix=i+x-1;
+						printf("asd: %d, %d \n", jy, ix );
+						if( jy < destino.w && jy >= 0 && ix < destino.h && ix >= 0)
+						{
+							cornew0=cornew0+(kernel[y][x]+destino.m[jy][ix][0]);
+							cornew1=cornew1+(kernel[y][x]+destino.m[jy][ix][1]);
+							cornew2=cornew2+(kernel[y][x]+destino.m[jy][ix][2]);
+						}
+						
+					}
+					
+
+				}
+				printf("cores que devem pintar :  %d, %d, %d\n", cornew0/4, cornew1/4, cornew2/4 );
+				destino.m[i][j][0] = cornew0/4;
+				destino.m[i][j][1] = cornew1/4;
+				destino.m[i][j][2] = cornew2/4;
+				cornew0=0;
+				cornew1=0;
+				cornew2=0;
 			}
-			// destino.m[i][j][0] = 125;
-			// destino.m[i][j][1] = 125;
-			// destino.m[i][j][2] = 125;
+		
 		}
-	}
-	for(j = 0; j < destino.w; j=j+nivel) {
-		for(i = 0; i < destino.h; i++) {
-			int cor1=destino.m[i][j][0];
-			int cor2=destino.m[i][j][1];
-			int cor3=destino.m[i][j][2];
-			
-			for(int c=j; c<j+nivel; c++){
-				destino.m[i][c][0] = cor1;
-				destino.m[i][c][1] = cor2;
-				destino.m[i][c][2] = cor3;
-			}
-			// destino.m[i][j][0] = 125;
-			// destino.m[i][j][1] = 125;
-			// destino.m[i][j][2] = 125;
-		}
-	}
+	
+
+
+
 	return destino;
 }
 

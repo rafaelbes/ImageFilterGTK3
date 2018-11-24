@@ -1,9 +1,12 @@
 #include "imagem.h"
 
-Imagem alocarImagem(Imagem referencia) {
+Imagem alocarImagem(Imagem referencia, int separacao) {
 	Imagem img;
 	int i, j;
-	img.h = referencia.h;
+	int refalt= referencia.h;
+	printf("%d \n", separacao);
+	img.h = refalt;
+	printf("%d \n", img.h);
 	img.w = referencia.w;
 	img.numCanais = referencia.numCanais;
 	img.m = malloc(sizeof(guchar **)*img.h);
