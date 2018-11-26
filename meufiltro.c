@@ -2,8 +2,9 @@
 
 void inicializarWidgetsMeuFiltro() {
 	//widgets das opcoes de filtro
-	widgetControleNivel = 	gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 30, 1);
-	widgetMisturarCanais = gtk_check_button_new_with_label("Misturar canais");
+	widgetControleNivel = 	gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 80, 1);
+	widgetcheckhorizontal = gtk_check_button_new_with_label("Linhas horizontais");
+	widgetcheckverticais = gtk_check_button_new_with_label("Linhas verticais");
 	g_signal_connect(G_OBJECT(widgetControleNivel), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
 }
 
@@ -13,13 +14,48 @@ void adicionarWidgetsMeuFiltro(GtkWidget *container) {
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 	gtk_container_add(GTK_CONTAINER(container), vbox);
 	gtk_container_add(GTK_CONTAINER(vbox), widgetControleNivel);
-	gtk_container_add(GTK_CONTAINER(vbox), widgetMisturarCanais);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckhorizontal);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckverticais);
 }
 
 Imagem meuFiltro(Imagem origem) {
 	int i, j;
 	int nivel = (int) gtk_range_get_value(GTK_RANGE(widgetControleNivel));
-	Imagem destino = alocarImagem(origem, nivel);
+	
+	Imagem destino;
+
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckhorizontal))) {
+		printf("horizontal true");
+		destino = alocarImagemDimensao(origem.w*2, origem.h, origem.numCanais);
+		for(j = 0; j < destino.w; j++) {
+			for(i = 0; i < destino.h; i++) {
+				destino.m[i][j][0] = 0;
+				destino.m[i][j][1] = 0;
+				destino.m[i][j][2] = 0;
+			}
+		}
+		for(j = 0; j < destino.w; j=j+nivel) {
+			for(i = 0; i < origem.h; i++) {
+				for(int c = 0; c < nivel; c=c+nivel) {
+					if(c<origem.w){
+						destino.m[i][j+c][0] = origem.m[i][c][0];
+						destino.m[i][j+c][1] = origem.m[i][c][1];
+						destino.m[i][j+c][2] = origem.m[i][c][2];
+					}
+					
+				}
+				
+			}
+		}
+	}else{
+		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckverticais))){
+			printf("vertical true");
+			destino = alocarImagemDimensao(origem.w, origem.h*2, origem.numCanais);
+		}else{
+			destino = alocarImagem(origem);
+		}
+		
+	}
 	
 	//Kernel de Sharpen
     int kernel[3][3] = {{0,-1,0},
@@ -27,20 +63,16 @@ Imagem meuFiltro(Imagem origem) {
                         {0,-1,0},
                         };
 	
-	for(j = 0; j < destino.w; j++) {
-		for(i = 0; i < destino.h; i++) {
+	/*for(j = 0; j < origem.w; j++) {
+		for(i = 0; i < origem.h; i++) {
 			destino.m[i][j][0] = origem.m[i][j][0];
 			destino.m[i][j][1] = origem.m[i][j][1];
 			destino.m[i][j][2] = origem.m[i][j][2];
 		}
 	}
-		int cornew0=0;
-		int cornew1=0;
-		int cornew2=0;
 
-
-		for(j = 1; j < origem.w-1; j++) {
-			for(i = 1; i < origem.h-1; i++) {
+		for(j = 0; j < origem.w; j++) {
+			for(i =0; i < origem.h; i++) {
 				
 				for( int y = 0; y < 3; y++ )
 				{
@@ -48,7 +80,7 @@ Imagem meuFiltro(Imagem origem) {
 					{	
 						printf("colune e linha :%d, %d\n", j+y, i+x );
 						printf("cores: %d, %d, %d\n", cornew0, cornew1, cornew2 );
-						int jy=j+y-1;
+						int jy=j+y;
 						int ix=i+x-1;
 						printf("asd: %d, %d \n", jy, ix );
 						if( jy < destino.w && jy >= 0 && ix < destino.h && ix >= 0)
@@ -63,9 +95,9 @@ Imagem meuFiltro(Imagem origem) {
 
 				}
 				printf("cores que devem pintar :  %d, %d, %d\n", cornew0/4, cornew1/4, cornew2/4 );
-				destino.m[i][j][0] = cornew0/4;
-				destino.m[i][j][1] = cornew1/4;
-				destino.m[i][j][2] = cornew2/4;
+				destino.m[i][j][0] = 0;//cornew0/4;
+				destino.m[i][j][1] = 0;//cornew1/4;
+				destino.m[i][j][2] = 0;//cornew2/4;
 				cornew0=0;
 				cornew1=0;
 				cornew2=0;
@@ -73,7 +105,7 @@ Imagem meuFiltro(Imagem origem) {
 		
 		}
 	
-
+*/
 
 
 	return destino;

@@ -1,14 +1,26 @@
 #include "imagem.h"
 
-Imagem alocarImagem(Imagem referencia, int separacao) {
+Imagem alocarImagem(Imagem referencia) {
 	Imagem img;
 	int i, j;
-	int refalt= referencia.h;
-	printf("%d \n", separacao);
-	img.h = refalt;
-	printf("%d \n", img.h);
+	img.h = referencia.h;
 	img.w = referencia.w;
 	img.numCanais = referencia.numCanais;
+	img.m = malloc(sizeof(guchar **)*img.h);
+	for(i = 0; i < img.h; i++) {
+		img.m[i] = malloc(sizeof(guchar *)*img.w);
+		for(j = 0; j < img.w; j++)
+			img.m[i][j] = malloc(sizeof(guchar)*img.numCanais);
+	}
+	return img;
+}
+
+Imagem alocarImagemDimensao(int w, int h, int numCanais) {
+	Imagem img;
+	int i, j;
+	img.h = h;
+	img.w = w;
+	img.numCanais = numCanais;
 	img.m = malloc(sizeof(guchar **)*img.h);
 	for(i = 0; i < img.h; i++) {
 		img.m[i] = malloc(sizeof(guchar *)*img.w);
@@ -27,4 +39,3 @@ void desalocarImagem(Imagem referencia) {
 	}
 	free(referencia.m);
 }
-
