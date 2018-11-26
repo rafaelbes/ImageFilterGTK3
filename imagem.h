@@ -12,7 +12,7 @@ typedef struct Imagem {
 	int numCanais;
 } Imagem;
 
-Imagem original, resultado;
+Imagem original, resultado, textura;
 Imagem alocarImagem(Imagem referencia);
 Imagem alocarImagemDimensao(int w, int h, int numCanais);
 void desalocarImagem(Imagem referencia);

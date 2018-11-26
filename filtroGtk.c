@@ -9,6 +9,7 @@ GtkWidget *window, *image;
 GtkWidget *vbox, *hbox;
 GtkWidget *label1, *label2;
 char *nomeArquivo;
+char *nomedaTextura;
 
 void printImagemInfo(Imagem img) {
 	printf("Imagem %d %d, ch %d\n", img.w, img.h, img.numCanais);
@@ -45,6 +46,38 @@ Imagem obterMatrizImagem() {
 	return img;
 }
 
+
+Imagem obterMatrizImagemTextura() {
+	int i, j, ch, rowstride;
+	guchar ***m, *pixels, *p;
+	Imagem imgtext;
+	
+	GdkPixbuf *buffer = gtk_image_get_pixbuf(GTK_IMAGE(image));
+	imgtext.h = gdk_pixbuf_get_height(buffer);
+	imgtext.w = gdk_pixbuf_get_width(buffer);
+	imgtext.numCanais = gdk_pixbuf_get_n_channels(buffer);
+	rowstride = gdk_pixbuf_get_rowstride(buffer);
+	pixels = gdk_pixbuf_get_pixels(buffer);
+
+	imgtext.m = malloc(sizeof(guchar **)*imgtext.h);
+	for(i = 0; i < imgtext.h; i++) {
+		imgtext.m[i] = malloc(sizeof(guchar *)*imgtext.w);
+		for(j = 0; j < imgtext.w; j++)
+			imgtext.m[i][j] = malloc(sizeof(guchar)*imgtext.numCanais);
+	}
+
+	for(i = 0; i < imgtext.h; i++) {
+		p = pixels + rowstride*i;
+		for(j = 0; j < imgtext.w; j++) {
+			for(ch = 0; ch < imgtext.numCanais; ch++) {
+				imgtext.m[i][j][ch] = *p;
+				p++;
+			}
+		}
+	}
+	return imgtext;
+}
+
 void carregarImagem(GtkWidget *widget, gpointer data) {
 	GtkWidget *dialog = gtk_file_chooser_dialog_new("Abrir arquivo", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 
@@ -59,6 +92,19 @@ void carregarImagem(GtkWidget *widget, gpointer data) {
 
 	gtk_label_set_text(GTK_LABEL(label1), "Imagem carregada");
 	original = obterMatrizImagem();
+}
+
+void carregarTextura(GtkWidget *widget, gpointer data) {
+	GtkWidget *dialog = gtk_file_chooser_dialog_new("Abrir arquivo de textura", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		nomedaTextura = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(dialog) );
+		gtk_widget_destroy(dialog);
+	}
+
+	gtk_image_set_from_file(GTK_IMAGE(image), nomedaTextura);
+
+	textura = obterMatrizImagemTextura(); 
 }
 
 void salvarImagem(GtkWidget *widget, gpointer data) {
@@ -111,7 +157,7 @@ void funcaoAplicar(GtkWidget *widget, gpointer data) {
 
 	funcaoRestaurar(NULL, NULL);
 	//Imagem img = obterMatrizImagem(image);
-	Imagem res = meuFiltro(original);
+	Imagem res = meuFiltro(original, textura);
 	atualizarGtkImage(res);
 	desalocarImagem(res);
 	gtk_label_set_text(GTK_LABEL(label1), "Filtro aplicado");
@@ -156,6 +202,9 @@ int main(int argc, char **argv) {
 	//cria um botao com titulo carregar imagem
 	GtkWidget *botaoCarregar = gtk_button_new_with_label("Carregar Imagem");
 
+	//cria um botao com titulo carregar imagem
+	GtkWidget *botaoCarregarTextura = gtk_button_new_with_label("Carregar Textura");
+
 	//cria um botao com titulo aplicar filtro
 	GtkWidget *botaoAplicar = gtk_button_new_with_label("Aplicar Filtro");
 
@@ -181,6 +230,7 @@ int main(int argc, char **argv) {
 
 	//adiciona os botoes no container horizontal (hbox)
 	gtk_container_add(GTK_CONTAINER(hbox), botaoCarregar);
+	gtk_container_add(GTK_CONTAINER(hbox), botaoCarregarTextura);
 	gtk_container_add(GTK_CONTAINER(hbox), botaoAplicar);
 	gtk_container_add(GTK_CONTAINER(hbox), botaoRestaurar);
 	gtk_container_add(GTK_CONTAINER(hbox), botaoSalvar);
@@ -222,6 +272,9 @@ int main(int argc, char **argv) {
 	}
 	//conecta o evento clicked do botaoCarregar a funcao carregarImagem
 	g_signal_connect(G_OBJECT(botaoCarregar), "clicked", G_CALLBACK(carregarImagem), NULL);
+
+	//conecta o evento clicked do botaoCarregarTextura a funcao carregarImagem
+	g_signal_connect(G_OBJECT(botaoCarregarTextura), "clicked", G_CALLBACK(carregarTextura), NULL);
 
 	//conecta o evento clicked do botaoAplicar a funcaoTeste (argv[0] eh o argumento)
 	g_signal_connect(G_OBJECT(botaoAplicar), "clicked", G_CALLBACK(funcaoAplicar), NULL);

@@ -2,10 +2,26 @@
 
 void inicializarWidgetsMeuFiltro() {
 	//widgets das opcoes de filtro
-	widgetControleNivel = 	gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 80, 1);
+	widgetLabelContTamanho=  gtk_label_new("Tamanho da tira");
+	widgetControleTamanho = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 80, 1);
+	
+	widgetLabelContDistancia= gtk_label_new("Distancia das tiras");
+	widgetControleDistancia = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 80, 1);
+
 	widgetcheckhorizontal = gtk_check_button_new_with_label("Linhas horizontais");
 	widgetcheckverticais = gtk_check_button_new_with_label("Linhas verticais");
-	g_signal_connect(G_OBJECT(widgetControleNivel), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
+
+	widgetLabelCorRed= gtk_label_new("Valor para cor vermelha");
+	widgetColorRed = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
+
+	widgetLabelCorBlue= gtk_label_new("Valor para cor verde");
+	widgetColorBlue = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
+
+	widgetLabelCorGreen= gtk_label_new("Valor para cor azul");
+	widgetColorGreen = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
+
+	g_signal_connect(G_OBJECT(widgetControleTamanho), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
+	g_signal_connect(G_OBJECT(widgetControleDistancia), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
 }
 
 void adicionarWidgetsMeuFiltro(GtkWidget *container) {
@@ -13,19 +29,39 @@ void adicionarWidgetsMeuFiltro(GtkWidget *container) {
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 	gtk_container_add(GTK_CONTAINER(container), vbox);
-	gtk_container_add(GTK_CONTAINER(vbox), widgetControleNivel);
+
+	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelContTamanho);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetControleTamanho);
+
+	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelContDistancia);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetControleDistancia);
+
+	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorRed);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetColorRed);
+
+	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorBlue);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetColorBlue);
+
+	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorGreen);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetColorGreen);
+
 	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckhorizontal);
 	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckverticais);
 }
 
-Imagem meuFiltro(Imagem origem) {
+Imagem meuFiltro(Imagem origem, Imagem textura) {
 	int i, j;
-	int nivel = (int) gtk_range_get_value(GTK_RANGE(widgetControleNivel));
-	
+	int tamanho = (int) gtk_range_get_value(GTK_RANGE(widgetControleTamanho));
+	int distancia = (int) gtk_range_get_value(GTK_RANGE(widgetControleDistancia));
+
+	int corred = (int) gtk_range_get_value(GTK_RANGE(widgetColorRed));
+	int corblue = (int) gtk_range_get_value(GTK_RANGE(widgetColorBlue));
+	int corgreen = (int) gtk_range_get_value(GTK_RANGE(widgetColorGreen));
+
 	Imagem destino;
 
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckhorizontal))) {
-		printf("horizontal true");
+		printf("horizontal true \n");
 		destino = alocarImagemDimensao(origem.w*2, origem.h, origem.numCanais);
 		for(j = 0; j < destino.w; j++) {
 			for(i = 0; i < destino.h; i++) {
@@ -34,13 +70,20 @@ Imagem meuFiltro(Imagem origem) {
 				destino.m[i][j][2] = 0;
 			}
 		}
-		for(j = 0; j < destino.w; j=j+nivel) {
-			for(i = 0; i < origem.h; i++) {
-				for(int c = 0; c < nivel; c=c+nivel) {
-					if(c<origem.w){
-						destino.m[i][j+c][0] = origem.m[i][c][0];
-						destino.m[i][j+c][1] = origem.m[i][c][1];
-						destino.m[i][j+c][2] = origem.m[i][c][2];
+		for(j = 0; j < destino.w; j=j+tamanho+distancia) {
+			for(i = 0; i < destino.h; i++) {
+				for (int c=j; c<j+tamanho; c++){
+					if(c<destino.w){
+						destino.m[i][c][0] = origem.m[i][c/2][0];
+						destino.m[i][c][1] = origem.m[i][c/2][1];
+						destino.m[i][c][2] = origem.m[i][c/2][2];
+					}
+				}
+				for (int c=j+tamanho; c<j+tamanho+distancia; c++){
+					if(c<destino.w){
+						destino.m[i][c][0] = corred;
+						destino.m[i][c][1] = corblue;
+						destino.m[i][c][2] = corgreen;
 					}
 					
 				}
@@ -51,61 +94,47 @@ Imagem meuFiltro(Imagem origem) {
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckverticais))){
 			printf("vertical true");
 			destino = alocarImagemDimensao(origem.w, origem.h*2, origem.numCanais);
+			for(j = 0; j < destino.w; j++) {
+				for(i = 0; i < destino.h; i=i+tamanho+distancia) {
+					for (int c=i; c<i+tamanho; c++){
+						if(c<destino.w){
+							destino.m[c][j][0] = origem.m[c/2][j][0];
+							destino.m[c][j][1] = origem.m[c/2][j][1];
+							destino.m[c][j][2] = origem.m[c/2][j][2];
+						}
+					}
+					for (int c=i+tamanho; c<i+tamanho+distancia; c++){
+						if(c<destino.w){
+							destino.m[c][j][0] = 0;
+							destino.m[c][j][1] = 255;
+							destino.m[c][j][2] = 0;
+						}
+					}
+				}
+			}
+
 		}else{
 			destino = alocarImagem(origem);
 		}
-		
-	}
-	
-	//Kernel de Sharpen
-    int kernel[3][3] = {{0,-1,0},
-                        {-1, 5,-1},
-                        {0,-1,0},
-                        };
-	
-	/*for(j = 0; j < origem.w; j++) {
-		for(i = 0; i < origem.h; i++) {
-			destino.m[i][j][0] = origem.m[i][j][0];
-			destino.m[i][j][1] = origem.m[i][j][1];
-			destino.m[i][j][2] = origem.m[i][j][2];
-		}
 	}
 
-		for(j = 0; j < origem.w; j++) {
-			for(i =0; i < origem.h; i++) {
-				
-				for( int y = 0; y < 3; y++ )
-				{
-					for( int x = 0; x < 3; x++ )
-					{	
-						printf("colune e linha :%d, %d\n", j+y, i+x );
-						printf("cores: %d, %d, %d\n", cornew0, cornew1, cornew2 );
-						int jy=j+y;
-						int ix=i+x-1;
-						printf("asd: %d, %d \n", jy, ix );
-						if( jy < destino.w && jy >= 0 && ix < destino.h && ix >= 0)
-						{
-							cornew0=cornew0+(kernel[y][x]+destino.m[jy][ix][0]);
-							cornew1=cornew1+(kernel[y][x]+destino.m[jy][ix][1]);
-							cornew2=cornew2+(kernel[y][x]+destino.m[jy][ix][2]);
-						}
-						
+	
+	
+	for(int a=0; a<destino.w; a=a+textura.w){
+		for(int b=0; destino.h; b=b+textura.h){
+			for(j = 0; j < textura.w; j++) {
+				for(i = 0; i < textura.h; i++) {
+					if(j<destino.h && i<destino.w){
+						destino.m[i][j][0] = (destino.m[i][j][0]*0.5)+(textura.m[i][j][0]*0.5);
+						destino.m[i][j][2] = (destino.m[i][j][2]*0.5)+(textura.m[i][j][2]*0.5);
+						destino.m[i][j][1] = (destino.m[i][j][1]*0.5)+(textura.m[i][j][1]*0.5);
 					}
 					
-
 				}
-				printf("cores que devem pintar :  %d, %d, %d\n", cornew0/4, cornew1/4, cornew2/4 );
-				destino.m[i][j][0] = 0;//cornew0/4;
-				destino.m[i][j][1] = 0;//cornew1/4;
-				destino.m[i][j][2] = 0;//cornew2/4;
-				cornew0=0;
-				cornew1=0;
-				cornew2=0;
 			}
-		
 		}
+	}
 	
-*/
 
 
 	return destino;

@@ -8,11 +8,22 @@
 #include "imagem.h"
 
 //declare aqui os seus widgets
-GtkWidget *widgetControleNivel;
+GtkWidget *widgetControleTamanho;
+GtkWidget *widgetControleDistancia;
 GtkWidget *widgetcheckhorizontal;
 GtkWidget *widgetcheckverticais;
 
-Imagem meuFiltro(Imagem origem);
+GtkWidget *widgetColorRed;
+GtkWidget *widgetColorBlue;
+GtkWidget *widgetColorGreen;
+
+GtkWidget *widgetLabelContTamanho;
+GtkWidget *widgetLabelContDistancia;
+GtkWidget *widgetLabelCorRed;
+GtkWidget *widgetLabelCorBlue;
+GtkWidget *widgetLabelCorGreen;
+
+Imagem meuFiltro(Imagem origem, Imagem textura);
 void inicializarWidgetsMeuFiltro();
 void adicionarWidgetsMeuFiltro(GtkWidget *container);
 
