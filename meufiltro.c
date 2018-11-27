@@ -108,9 +108,9 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 					}
 					for (int c=i+tamanho; c<i+tamanho+distancia; c++){
 						if(c<destino.w){
-							destino.m[c][j][0] = 0;
-							destino.m[c][j][1] = 255;
-							destino.m[c][j][2] = 0;
+							destino.m[c][j][0] = corred;
+							destino.m[c][j][1] = corblue;
+							destino.m[c][j][2] = corgreen;
 						}
 					}
 				}
@@ -118,7 +118,14 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 
 		}else{
 			destino = alocarImagem(origem);
+			for(j = 0; j < destino.w; j++) {
+				for(i = 0; i < destino.h; i++) {
+					destino.m[i][j][0] = origem.m[i][j][0];
+					destino.m[i][j][1] = origem.m[i][j][1];
+					destino.m[i][j][2] = origem.m[i][j][2];
+				}
 		}
+	}
 	}
 	int a=0, b=0;
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetchecktexture))) {
@@ -141,5 +148,3 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 
 	return destino;
 }
-
-
