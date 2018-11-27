@@ -10,6 +10,8 @@ void inicializarWidgetsMeuFiltro() {
 
 	widgetcheckhorizontal = gtk_check_button_new_with_label("Linhas horizontais");
 	widgetcheckverticais = gtk_check_button_new_with_label("Linhas verticais");
+	widgetchecktexture = gtk_check_button_new_with_label("Aplicar textura");
+
 
 	widgetLabelCorRed= gtk_label_new("Valor para cor vermelha");
 	widgetColorRed = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
@@ -47,6 +49,7 @@ void adicionarWidgetsMeuFiltro(GtkWidget *container) {
 
 	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckhorizontal);
 	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckverticais);
+	gtk_container_add(GTK_CONTAINER(vbox), widgetchecktexture);
 }
 
 Imagem meuFiltro(Imagem origem, Imagem textura) {
@@ -117,25 +120,24 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 			destino = alocarImagem(origem);
 		}
 	}
+	int a=0, b=0;
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetchecktexture))) {
 
-	
-	
-	for(int a=0; a<destino.w; a=a+textura.w){
-		for(int b=0; destino.h; b=b+textura.h){
-			for(j = 0; j < textura.w; j++) {
-				for(i = 0; i < textura.h; i++) {
-					if(j<destino.h && i<destino.w){
-						destino.m[i][j][0] = (destino.m[i][j][0]*0.5)+(textura.m[i][j][0]*0.5);
-						destino.m[i][j][2] = (destino.m[i][j][2]*0.5)+(textura.m[i][j][2]*0.5);
-						destino.m[i][j][1] = (destino.m[i][j][1]*0.5)+(textura.m[i][j][1]*0.5);
+		for(j=0;j<destino.w; j=j+a ){
+			for(i=0; i<destino.h; i=i+b) {
+				printf(" i:%d textura.h: %d\n",  i, textura.h);
+				for(a=0; a<textura.w; a++){
+					for (b=0; b<textura.h; b++){
+						if(b+i<destino.h && a+j<destino.w){
+							destino.m[b+i][a+j][0] = (textura.m[b][a][0])*0.5+(destino.m[b+i][a+j][0])*0.5;
+							destino.m[b+i][a+j][1] = (textura.m[b][a][1])*0.5+(destino.m[b+i][a+j][1])*0.5;
+							destino.m[b+i][a+j][2] = (textura.m[b][a][2])*0.5+(destino.m[b+i][a+j][2])*0.5;
+						}
 					}
-					
 				}
 			}
 		}
 	}
-	
-
 
 	return destino;
 }

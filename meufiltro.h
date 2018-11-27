@@ -12,6 +12,7 @@ GtkWidget *widgetControleTamanho;
 GtkWidget *widgetControleDistancia;
 GtkWidget *widgetcheckhorizontal;
 GtkWidget *widgetcheckverticais;
+GtkWidget *widgetchecktexture;
 
 GtkWidget *widgetColorRed;
 GtkWidget *widgetColorBlue;

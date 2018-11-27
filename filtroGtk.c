@@ -5,7 +5,7 @@
 #include "imagem.h"
 #include "meufiltro.h"
 
-GtkWidget *window, *image;
+GtkWidget *window, *image, *imagetextur;
 GtkWidget *vbox, *hbox;
 GtkWidget *label1, *label2;
 char *nomeArquivo;
@@ -52,7 +52,7 @@ Imagem obterMatrizImagemTextura() {
 	guchar ***m, *pixels, *p;
 	Imagem imgtext;
 	
-	GdkPixbuf *buffer = gtk_image_get_pixbuf(GTK_IMAGE(image));
+	GdkPixbuf *buffer = gtk_image_get_pixbuf(GTK_IMAGE(imagetextur));
 	imgtext.h = gdk_pixbuf_get_height(buffer);
 	imgtext.w = gdk_pixbuf_get_width(buffer);
 	imgtext.numCanais = gdk_pixbuf_get_n_channels(buffer);
@@ -102,7 +102,7 @@ void carregarTextura(GtkWidget *widget, gpointer data) {
 		gtk_widget_destroy(dialog);
 	}
 
-	gtk_image_set_from_file(GTK_IMAGE(image), nomedaTextura);
+	gtk_image_set_from_file(GTK_IMAGE(imagetextur), nomedaTextura);
 
 	textura = obterMatrizImagemTextura(); 
 }
@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
 	//cria um botao com titulo carregar imagem
 	GtkWidget *botaoCarregar = gtk_button_new_with_label("Carregar Imagem");
 
-	//cria um botao com titulo carregar imagem
+	//cria um botao com titulo carregar imagem de textura
 	GtkWidget *botaoCarregarTextura = gtk_button_new_with_label("Carregar Textura");
 
 	//cria um botao com titulo aplicar filtro
@@ -241,6 +241,7 @@ int main(int argc, char **argv) {
 
 	//adiciona um widget imagem vazio
 	image = gtk_image_new();
+	imagetextur = gtk_image_new();
 
 	//adiciona os demais widgets no container vertical (vbox)
 	//a funcao gtk_box_pack_start eh similar a gtk_container_add
