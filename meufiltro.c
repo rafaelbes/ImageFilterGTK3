@@ -12,16 +12,8 @@ void inicializarWidgetsMeuFiltro() {
 	widgetcheckverticais = gtk_check_button_new_with_label("Linhas verticais");
 	widgetchecktexture = gtk_check_button_new_with_label("Aplicar textura");
 
+	widgetLabelCorselect= gtk_label_new("Selecionar cor da tira");
 	widgetColorpicker = gtk_color_button_new();
-
-	// widgetLabelCorRed= gtk_label_new("Valor para cor vermelha");
-	// widgetColorRed = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
-
-	// widgetLabelCorBlue= gtk_label_new("Valor para cor verde");
-	// widgetColorBlue = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
-
-	// widgetLabelCorGreen= gtk_label_new("Valor para cor azul");
-	// widgetColorGreen = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 255, 1);
 
 	g_signal_connect(G_OBJECT(widgetControleTamanho), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
 	g_signal_connect(G_OBJECT(widgetControleDistancia), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
@@ -39,17 +31,8 @@ void adicionarWidgetsMeuFiltro(GtkWidget *container) {
 	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelContDistancia);
 	gtk_container_add(GTK_CONTAINER(vbox), widgetControleDistancia);
 
+	gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorselect);
 	gtk_container_add(GTK_CONTAINER(vbox), widgetColorpicker);
-
-
-	// gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorRed);
-	// gtk_container_add(GTK_CONTAINER(vbox), widgetColorRed);
-
-	// gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorBlue);
-	// gtk_container_add(GTK_CONTAINER(vbox), widgetColorBlue);
-
-	// gtk_container_add(GTK_CONTAINER(vbox), widgetLabelCorGreen);
-	// gtk_container_add(GTK_CONTAINER(vbox), widgetColorGreen);
 
 	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckhorizontal);
 	gtk_container_add(GTK_CONTAINER(vbox), widgetcheckverticais);
@@ -62,25 +45,19 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 	int i, j;
 	int tamanho = (int) gtk_range_get_value(GTK_RANGE(widgetControleTamanho));
 	int distancia = (int) gtk_range_get_value(GTK_RANGE(widgetControleDistancia));
-	    //   (GtkColorButton *button,
 
-	// GdkRGBA cor = (GdkRGBA) gtk_color_button_get_color(GtkColorButton *widgetColorpicker );
-	GdkRGBA color = (void) gtk_color_chooser_get_rgba(widgetColorpicker);
-	
-	
+	GdkColor color;
+	gtk_color_button_get_color(GTK_COLOR_BUTTON(widgetColorpicker), &color);
 
+	double corred = color.red;
+	double corblue = color.green;
+	double corgreen = color.blue;
 
-
-	int corred = 0;//(int) gtk_range_get_value(GTK_RANGE(widgetColorRed));
-	int corblue = 0;//(int) gtk_range_get_value(GTK_RANGE(widgetColorBlue));
-	int corgreen = 0;//(int) gtk_range_get_value(GTK_RANGE(widgetColorGreen));
-
-
-
+	printf("corred: %lf, corblue: %lf,corgreen: %lf ", corred, corblue, corgreen );
 	Imagem destino;
 
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckhorizontal))) {
-		printf("horizontal true \n");
+		// printf("horizontal true \n");
 		destino = alocarImagemDimensao(origem.w*2, origem.h, origem.numCanais);
 		for(j = 0; j < destino.w; j++) {
 			for(i = 0; i < destino.h; i++) {
@@ -111,7 +88,7 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 		}
 	}else{
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckverticais))){
-			printf("vertical true");
+			// printf("vertical true");
 			destino = alocarImagemDimensao(origem.w, origem.h*2, origem.numCanais);
 			for(j = 0; j < destino.w; j++) {
 				for(i = 0; i < destino.h; i=i+tamanho+distancia) {
@@ -143,18 +120,18 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 		}
 	}
 	}
-	int a=0, b=0;
+	int a, b;
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetchecktexture))) {
 
 		for(j=0;j<destino.w; j=j+a ){
 			for(i=0; i<destino.h; i=i+b) {
-				printf(" i:%d textura.h: %d\n",  i, textura.h);
+				// printf(" i:%d textura.h: %d\n",  i, textura.h);
 				for(a=0; a<textura.w; a++){
 					for (b=0; b<textura.h; b++){
 						if(b+i<destino.h && a+j<destino.w){
-							destino.m[b+i][a+j][0] = (textura.m[b][a][0])*0.5+(destino.m[b+i][a+j][0])*0.5;
-							destino.m[b+i][a+j][1] = (textura.m[b][a][1])*0.5+(destino.m[b+i][a+j][1])*0.5;
-							destino.m[b+i][a+j][2] = (textura.m[b][a][2])*0.5+(destino.m[b+i][a+j][2])*0.5;
+							destino.m[b+i][a+j][0] = (textura.m[b][a][0])*0.3+(destino.m[b+i][a+j][0])*0.7;
+							destino.m[b+i][a+j][1] = (textura.m[b][a][1])*0.3+(destino.m[b+i][a+j][1])*0.7;
+							destino.m[b+i][a+j][2] = (textura.m[b][a][2])*0.3+(destino.m[b+i][a+j][2])*0.7;
 						}
 					}
 				}

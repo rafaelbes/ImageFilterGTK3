@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
 	GtkWidget *botaoCarregarTextura = gtk_button_new_with_label("Carregar Textura");
 
 	//cria um botao com titulo aplicar filtro
-	GtkWidget *botaoAplicar = gtk_button_new_with_label("Aplicar Filtro");
+	GtkWidget *botaoAplicar = gtk_button_new_with_label("Aplicar Textura");
 
 	//cria um botao para restaurar imagem
 	GtkWidget *botaoRestaurar = gtk_button_new_with_label("Restaurar Imagem");

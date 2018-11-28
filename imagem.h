@@ -19,7 +19,6 @@ typedef struct Imagem {
 //   gdouble alpha;
 // } GdkRGBA;
 
-typedef struct _GtkColorChooser GtkColorChooser;
 
 
 Imagem original, resultado, textura;

@@ -14,16 +14,11 @@ GtkWidget *widgetcheckhorizontal;
 GtkWidget *widgetcheckverticais;
 GtkWidget *widgetchecktexture;
 GtkWidget *widgetColorpicker;
-
-// GtkWidget *widgetColorRed;
-// GtkWidget *widgetColorBlue;
-// GtkWidget *widgetColorGreen;
-
+ 
+GtkWidget *widgetLabelCorselect;
 GtkWidget *widgetLabelContTamanho;
 GtkWidget *widgetLabelContDistancia;
-// GtkWidget *widgetLabelCorRed;
-// GtkWidget *widgetLabelCorBlue;
-// GtkWidget *widgetLabelCorGreen;
+
 
 Imagem meuFiltro(Imagem origem, Imagem textura);
 void inicializarWidgetsMeuFiltro();
