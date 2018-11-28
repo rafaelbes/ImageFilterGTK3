@@ -12,6 +12,16 @@ typedef struct Imagem {
 	int numCanais;
 } Imagem;
 
+// typedef struct GdkRGBA{
+//   gdouble red;
+//   gdouble green;
+//   gdouble blue;
+//   gdouble alpha;
+// } GdkRGBA;
+
+typedef struct _GtkColorChooser GtkColorChooser;
+
+
 Imagem original, resultado, textura;
 Imagem alocarImagem(Imagem referencia);
 Imagem alocarImagemDimensao(int w, int h, int numCanais);
