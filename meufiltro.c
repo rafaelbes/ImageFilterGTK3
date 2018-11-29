@@ -46,14 +46,14 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 	int tamanho = (int) gtk_range_get_value(GTK_RANGE(widgetControleTamanho));
 	int distancia = (int) gtk_range_get_value(GTK_RANGE(widgetControleDistancia));
 
-	GdkColor color;
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(widgetColorpicker), &color);
+	GdkRGBA color;
+	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(widgetColorpicker), &color);
 
-	double corred = color.red;
-	double corblue = color.green;
-	double corgreen = color.blue;
+	gdouble corred = color.red*255;
+	gdouble corblue = color.green*255;
+	gdouble corgreen = color.blue*255;
 
-	printf("corred: %lf, corblue: %lf,corgreen: %lf ", corred, corblue, corgreen );
+	printf("corred: %f, corblue: %f ,corgreen: %f ", corred, corblue, corgreen );
 	Imagem destino;
 
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckhorizontal))) {
@@ -69,11 +69,20 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 		for(j = 0; j < destino.w; j=j+tamanho+distancia) {
 			for(i = 0; i < destino.h; i++) {
 				for (int c=j; c<j+tamanho; c++){
-					if(c<destino.w){
-						destino.m[i][c][0] = origem.m[i][c/2][0];
-						destino.m[i][c][1] = origem.m[i][c/2][1];
-						destino.m[i][c][2] = origem.m[i][c/2][2];
+					if(c-distancia>0){
+						if(c<destino.w){
+							//if(c<origem.w){
+								destino.m[i][c][0] = origem.m[i][(c-distancia)/2][0];
+								destino.m[i][c][1] = origem.m[i][(c-distancia)/2][1];
+								destino.m[i][c][2] = origem.m[i][(c-distancia)/2][2];
+							//}else if(c>origem.w){
+							//	destino.m[i][c][0] = origem.m[i][c/2][0];
+						//		destino.m[i][c][1] = origem.m[i][c/2][1];
+						//		destino.m[i][c][2] = origem.m[i][c/2][2];
+						//	}
+						}
 					}
+					
 				}
 				for (int c=j+tamanho; c<j+tamanho+distancia; c++){
 					if(c<destino.w){
