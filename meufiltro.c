@@ -46,14 +46,14 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 	int tamanho = (int) gtk_range_get_value(GTK_RANGE(widgetControleTamanho));
 	int distancia = (int) gtk_range_get_value(GTK_RANGE(widgetControleDistancia));
 
-	GdkRGBA color;
-	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(widgetColorpicker), &color);
+	GdkColor color;
+	gtk_color_button_get_color(GTK_COLOR_BUTTON(widgetColorpicker), &color);
 
-	gdouble corred = color.red*255;
-	gdouble corblue = color.green*255;
-	gdouble corgreen = color.blue*255;
+	double corred = color.red*255;
+	double corblue = color.green*255;
+	double corgreen = color.blue*255;
 
-	printf("corred: %f, corblue: %f ,corgreen: %f ", corred, corblue, corgreen );
+	printf("corred: %lf, corblue: %lf,corgreen: %lf \n ", corred, corblue, corgreen );
 	Imagem destino;
 
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckhorizontal))) {
@@ -66,23 +66,15 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 				destino.m[i][j][2] = 0;
 			}
 		}
+		int a=0;
 		for(j = 0; j < destino.w; j=j+tamanho+distancia) {
 			for(i = 0; i < destino.h; i++) {
 				for (int c=j; c<j+tamanho; c++){
-					if(c-distancia>0){
-						if(c<destino.w){
-							//if(c<origem.w){
-								destino.m[i][c][0] = origem.m[i][(c-distancia)/2][0];
-								destino.m[i][c][1] = origem.m[i][(c-distancia)/2][1];
-								destino.m[i][c][2] = origem.m[i][(c-distancia)/2][2];
-							//}else if(c>origem.w){
-							//	destino.m[i][c][0] = origem.m[i][c/2][0];
-						//		destino.m[i][c][1] = origem.m[i][c/2][1];
-						//		destino.m[i][c][2] = origem.m[i][c/2][2];
-						//	}
-						}
+					if(c<destino.w && c>0){
+						destino.m[i][c][0] = origem.m[i][c/2][0];
+						destino.m[i][c][1] = origem.m[i][c/2][1];
+						destino.m[i][c][2] = origem.m[i][c/2][2];
 					}
-					
 				}
 				for (int c=j+tamanho; c<j+tamanho+distancia; c++){
 					if(c<destino.w){
@@ -94,22 +86,18 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 				}
 				
 			}
+			a=1;
 		}
 	}else{
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widgetcheckverticais))){
-			// printf("vertical true");
 			destino = alocarImagemDimensao(origem.w, origem.h*2, origem.numCanais);
 			for(j = 0; j < destino.w; j++) {
 				for(i = 0; i < destino.h; i=i+tamanho+distancia) {
 					for (int c=i; c<i+tamanho; c++){
-						if(c<destino.w){
-							destino.m[c][j][0] = origem.m[c][j][0];
-							destino.m[c][j][1] = origem.m[c][j][1];
-							destino.m[c][j][2] = origem.m[c][j][2];
-						}else if(c>destino.w){
-							destino.m[c][j][0] = origem.m[c/2][j][0];
-							destino.m[c][j][1] = origem.m[c/2][j][1];
-							destino.m[c][j][2] = origem.m[c/2][j][2];
+						if(c<destino.h && c>0){
+						destino.m[c][j][0] = origem.m[c/2][j][0];
+						destino.m[c][j][1] = origem.m[c/2][j][1];
+						destino.m[c][j][2] = origem.m[c/2][j][2];
 						}
 					}
 					for (int c=i+tamanho; c<i+tamanho+distancia; c++){
