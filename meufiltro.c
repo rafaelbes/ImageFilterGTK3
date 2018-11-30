@@ -94,6 +94,10 @@ Imagem meuFiltro(Imagem origem, Imagem textura) {
 				for(i = 0; i < destino.h; i=i+tamanho+distancia) {
 					for (int c=i; c<i+tamanho; c++){
 						if(c<destino.w){
+							destino.m[c][j][0] = origem.m[c][j][0];
+							destino.m[c][j][1] = origem.m[c][j][1];
+							destino.m[c][j][2] = origem.m[c][j][2];
+						}else if(c>destino.w){
 							destino.m[c][j][0] = origem.m[c/2][j][0];
 							destino.m[c][j][1] = origem.m[c/2][j][1];
 							destino.m[c][j][2] = origem.m[c/2][j][2];
