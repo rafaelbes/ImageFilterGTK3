@@ -51,6 +51,9 @@ void carregarImagem(GtkWidget *widget, gpointer data) {
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		nomeArquivo = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(dialog) );
 		gtk_widget_destroy(dialog);
+	} else {
+		gtk_widget_destroy(dialog);
+		return;
 	}
 
 	gtk_image_set_from_file(GTK_IMAGE(image), nomeArquivo);
@@ -68,12 +71,11 @@ void salvarImagem(GtkWidget *widget, gpointer data) {
 
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		nomeDestino = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(dialog) );
-		gtk_widget_destroy(dialog);
 		GdkPixbuf *buffer = gtk_image_get_pixbuf(GTK_IMAGE(image));
 		gdk_pixbuf_save(buffer, nomeDestino, "jpeg", NULL, "quality", "100", NULL);
 		gtk_label_set_text(GTK_LABEL(label1), "Imagem salva");
 	}
-	
+	gtk_widget_destroy(dialog);
 }
 
 void atualizarGtkImage(Imagem img) {
