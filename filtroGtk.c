@@ -46,7 +46,7 @@ Imagem obterMatrizImagem() {
 }
 
 void carregarImagem(GtkWidget *widget, gpointer data) {
-	GtkWidget *dialog = gtk_file_chooser_dialog_new("Abrir arquivo", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+	GtkWidget *dialog = gtk_file_chooser_dialog_new("Open File", GTK_WINDOW(window), GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		nomeArquivo = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(dialog) );
@@ -60,20 +60,20 @@ void carregarImagem(GtkWidget *widget, gpointer data) {
 
 	gtk_widget_queue_draw(image);
 
-	gtk_label_set_text(GTK_LABEL(label1), "Imagem carregada");
+	gtk_label_set_text(GTK_LABEL(label1), "Image loaded");
 	original = obterMatrizImagem();
 }
 
 void salvarImagem(GtkWidget *widget, gpointer data) {
 
-	GtkWidget *dialog = gtk_file_chooser_dialog_new("Nome arquivo", (GtkWindow *) window, GTK_FILE_CHOOSER_ACTION_SAVE, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+	GtkWidget *dialog = gtk_file_chooser_dialog_new("Filename", (GtkWindow *) window, GTK_FILE_CHOOSER_ACTION_SAVE, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 	char *nomeDestino;
 
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		nomeDestino = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(dialog) );
 		GdkPixbuf *buffer = gtk_image_get_pixbuf(GTK_IMAGE(image));
 		gdk_pixbuf_save(buffer, nomeDestino, "jpeg", NULL, "quality", "100", NULL);
-		gtk_label_set_text(GTK_LABEL(label1), "Imagem salva");
+		gtk_label_set_text(GTK_LABEL(label1), "Image saved");
 	}
 	gtk_widget_destroy(dialog);
 }
@@ -116,7 +116,7 @@ void funcaoAplicar(GtkWidget *widget, gpointer data) {
 	Imagem res = meuFiltro(original);
 	atualizarGtkImage(res);
 	desalocarImagem(res);
-	gtk_label_set_text(GTK_LABEL(label1), "Filtro aplicado");
+	gtk_label_set_text(GTK_LABEL(label1), "Filter applied");
 }   
 
 
@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	//altera o titulo da janela
-	gtk_window_set_title(GTK_WINDOW(window), "Aplicação de Filtros");
+	gtk_window_set_title(GTK_WINDOW(window), "Image Filter GTK3");
 	
 	//altera a posicao da janela para estar centralizada
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -156,19 +156,19 @@ int main(int argc, char **argv) {
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 
 	//cria um botao com titulo carregar imagem
-	GtkWidget *botaoCarregar = gtk_button_new_with_label("Carregar Imagem");
+	GtkWidget *botaoCarregar = gtk_button_new_with_label("Load Image");
 
 	//cria um botao com titulo aplicar filtro
-	GtkWidget *botaoAplicar = gtk_button_new_with_label("Aplicar Filtro");
+	GtkWidget *botaoAplicar = gtk_button_new_with_label("Apply Filter");
 
 	//cria um botao para restaurar imagem
-	GtkWidget *botaoRestaurar = gtk_button_new_with_label("Restaurar Imagem");
+	GtkWidget *botaoRestaurar = gtk_button_new_with_label("Reload Image");
 	
 	//cria um botao para salvar imagem
-	GtkWidget *botaoSalvar = gtk_button_new_with_label("Salvar Imagem");
+	GtkWidget *botaoSalvar = gtk_button_new_with_label("Save Image");
 
 	//cria um frame para colocar as opcoes do filtro
-	GtkWidget *frameFiltro = gtk_frame_new("Opções do filtro");
+	GtkWidget *frameFiltro = gtk_frame_new("Filter options");
 
 	//cria um scrolled window para inserir a imagem
 	GtkWidget *scrolledWindow = gtk_scrolled_window_new(gtk_adjustment_new(0, 0, 100, 1, 1, 1), gtk_adjustment_new(0, 0, 100, 1, 1, 1));
@@ -188,8 +188,8 @@ int main(int argc, char **argv) {
 	gtk_container_add(GTK_CONTAINER(hbox), botaoSalvar);
 
 	//cria labels
-	label1 = gtk_label_new("Carregue uma imagem");
-	label2 = gtk_label_new("Aplicação de Filtros");
+	label1 = gtk_label_new("Load an image");
+	label2 = gtk_label_new("Image Filter GTK3");
 
 	//adiciona um widget imagem vazio
 	image = gtk_image_new();

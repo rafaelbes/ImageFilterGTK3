@@ -3,7 +3,7 @@
 void inicializarWidgetsMeuFiltro() {
 	//widgets das opcoes de filtro
 	widgetControleNivel = 	gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 30, 1);
-	widgetMisturarCanais = gtk_check_button_new_with_label("Misturar canais");
+	widgetMisturarCanais = gtk_check_button_new_with_label("Shuffle channels");
 	g_signal_connect(G_OBJECT(widgetControleNivel), "value-changed", G_CALLBACK(funcaoAplicar), NULL);
 }
 
